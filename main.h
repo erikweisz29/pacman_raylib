@@ -49,29 +49,6 @@ typedef struct Player {
     Dir lastDir;
 } Player;
 
-//Szellemk kulonbozo texturainak tarolasahoz
-typedef struct EnemiesPng {
-    Texture2D redLeft;
-    Texture2D redRight;
-    Texture2D redUp;
-    Texture2D redDown;
-
-    Texture2D blueLeft;
-    Texture2D blueRight;
-    Texture2D blueUp;
-    Texture2D blueDown;
-
-    Texture2D orangeLeft;
-    Texture2D orangeRight;
-    Texture2D orangeUp;
-    Texture2D orangeDown;
-
-    Texture2D pinkLeft;
-    Texture2D pinkRight;
-    Texture2D pinkUp;
-    Texture2D pinkDown;
-} EnemiesPng;
-
 //Scoreboard eredmenyeinek tarolasahoz
 typedef struct Eredmeny {
     char* nev;

@@ -94,29 +94,38 @@ int main() {
               *current = &pacman;                               //jelenlegi frame-re mutato pointer
 
     //A szellemek kulonbozo texturainak betoltese, egy adatszerkezetbe
-    EnemiesPng emysPng;
+    Texture2D textureArr[4][5];
 
-    emysPng.redLeft = LoadTexture("img/enemies/red/redLeft.png");
-    emysPng.redRight = LoadTexture("img/enemies/red/redRight.png");
-    emysPng.redDown = LoadTexture("img/enemies/red/redDown.png");
-    emysPng.redUp = LoadTexture("img/enemies/red/redUp.png");
+    //red = 0
+    textureArr[0][UP] = LoadTexture("img/enemies/red/redUp.png");
+    textureArr[0][DOWN] = LoadTexture("img/enemies/red/redDown.png");
+    textureArr[0][LEFT] = LoadTexture("img/enemies/red/redLeft.png");
+    textureArr[0][RIGHT] = LoadTexture("img/enemies/red/redRight.png");
+    textureArr[0][NONE] = LoadTexture("img/enemies/red/redUp.png");
 
-    emysPng.pinkLeft = LoadTexture("img/enemies/pink/pinkLeft.png");
-    emysPng.pinkRight = LoadTexture("img/enemies/pink/pinkRight.png");
-    emysPng.pinkDown = LoadTexture("img/enemies/pink/pinkDown.png");
-    emysPng.pinkUp = LoadTexture("img/enemies/pink/pinkUp.png");
+    //blue = 1
+    textureArr[1][UP] = LoadTexture("img/enemies/blue/blueUp.png");
+    textureArr[1][DOWN] = LoadTexture("img/enemies/blue/blueDown.png");
+    textureArr[1][LEFT] = LoadTexture("img/enemies/blue/blueLeft.png");
+    textureArr[1][RIGHT] = LoadTexture("img/enemies/blue/blueRight.png");
+    textureArr[1][NONE] = LoadTexture("img/enemies/blue/blueUp.png");
 
-    emysPng.blueLeft = LoadTexture("img/enemies/blue/blueLeft.png");
-    emysPng.blueRight = LoadTexture("img/enemies/blue/blueRight.png");
-    emysPng.blueDown = LoadTexture("img/enemies/blue/blueDown.png");
-    emysPng.blueUp = LoadTexture("img/enemies/blue/blueUp.png");
+    //pink = 2
+    textureArr[2][UP] = LoadTexture("img/enemies/pink/pinkUp.png");
+    textureArr[2][DOWN] = LoadTexture("img/enemies/pink/pinkDown.png");
+    textureArr[2][LEFT] = LoadTexture("img/enemies/pink/pinkLeft.png");
+    textureArr[2][RIGHT] = LoadTexture("img/enemies/pink/pinkRight.png");
+    textureArr[2][NONE] = LoadTexture("img/enemies/pink/pinkUp.png");
 
-    emysPng.orangeLeft = LoadTexture("img/enemies/orange/orangeLeft.png");
-    emysPng.orangeRight = LoadTexture("img/enemies/orange/orangeRight.png");
-    emysPng.orangeDown = LoadTexture("img/enemies/orange/orangeDown.png");
-    emysPng.orangeUp = LoadTexture("img/enemies/orange/orangeUp.png");
+    //orange = 3
+    textureArr[3][UP] = LoadTexture("img/enemies/orange/orangeUp.png");
+    textureArr[3][DOWN] = LoadTexture("img/enemies/orange/orangeDown.png");
+    textureArr[3][LEFT] = LoadTexture("img/enemies/orange/orangeLeft.png");
+    textureArr[3][RIGHT] = LoadTexture("img/enemies/orange/orangeRight.png");
+    textureArr[3][NONE] = LoadTexture("img/enemies/orange/orangeUp.png");
 
-    bool plusX = false, plusY = false;
+    bool plusX = false,
+         plusY = false;
 
     //Jatek loop
     while (!WindowShouldClose()) {
@@ -177,7 +186,7 @@ int main() {
                     handleBlue(&(emys.blue), &(emys.red), &plr, movemapEnemy, &initBlue);
                     handleOrange(&(emys.orange), &plr, movemapEnemy, &initOrange);
                 }
-                drawEnemies(&emys, &emysPng);
+                drawEnemies(&emys, textureArr);
                 //Eredmeny szamolasa
                 handlePoints(&plr, pontok, &score);
 

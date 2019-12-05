@@ -9,5 +9,5 @@ void drawPont(Pont** pontok);
 void drawPacman(Player *plr, Texture2D *pacman);
 float getRotation(Player* plr);
 void getPlusXY(Player *plr, bool *plusX, bool *plusY);
-void drawEnemies(Enemies *emys, EnemiesPng* enemyTextures);
+void drawEnemies(Enemies *emys, Texture2D textureArr[4][5]);
 #endif

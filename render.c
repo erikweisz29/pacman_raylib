@@ -98,92 +98,9 @@ void drawPacman(Player* plr, Texture2D* pacman) {
     DrawTextureEx(*pacman, (Vector2) {plr->rec.x + ((plusX) ? 20:0), plr->rec.y + ((plusY) ? 20:0)}, getRotation(plr), 1.0f, WHITE);
 }
 
-void drawEnemies(Enemies* emys, EnemiesPng* enemyTextures) {
-    switch (emys->blue.plr.dir) {
-        case DOWN:
-            DrawTextureEx(enemyTextures->blueDown, (Vector2) {emys->blue.plr.rec.x, emys->blue.plr.rec.y}, 0.0f, 0.125f, WHITE);
-            break;
-
-        case UP:
-            DrawTextureEx(enemyTextures->blueUp, (Vector2){emys->blue.plr.rec.x, emys->blue.plr.rec.y}, 0.0f, 0.125f, WHITE);
-            break;
-
-        case LEFT:
-            DrawTextureEx(enemyTextures->blueLeft, (Vector2){emys->blue.plr.rec.x, emys->blue.plr.rec.y}, 0.0f, 0.125f, WHITE);
-            break;
-
-        case RIGHT:
-            DrawTextureEx(enemyTextures->blueRight, (Vector2){emys->blue.plr.rec.x, emys->blue.plr.rec.y}, 0.0f, 0.125f, WHITE);
-            break;
-
-        case NONE:
-            DrawTextureEx(enemyTextures->blueUp, (Vector2){emys->blue.plr.rec.x, emys->blue.plr.rec.y}, 0.0f, 0.125f, WHITE);
-            break;
-    }
-
-    switch (emys->red.plr.dir) {
-        case DOWN:
-            DrawTextureEx(enemyTextures->redDown, (Vector2) {emys->red.plr.rec.x, emys->red.plr.rec.y}, 0.0f, 0.125f, WHITE);
-            break;
-
-        case UP:
-            DrawTextureEx(enemyTextures->redUp, (Vector2){emys->red.plr.rec.x, emys->red.plr.rec.y}, 0.0f, 0.125f, WHITE);
-            break;
-
-        case LEFT:
-            DrawTextureEx(enemyTextures->redLeft, (Vector2){emys->red.plr.rec.x, emys->red.plr.rec.y}, 0.0f, 0.125f, WHITE);
-            break;
-
-        case RIGHT:
-            DrawTextureEx(enemyTextures->redRight, (Vector2){emys->red.plr.rec.x, emys->red.plr.rec.y}, 0.0f, 0.125f, WHITE);
-            break;
-
-        case NONE:
-            DrawTextureEx(enemyTextures->redUp, (Vector2){emys->red.plr.rec.x, emys->red.plr.rec.y}, 0.0f, 0.125f, WHITE);
-            break;
-    }
-
-    switch (emys->pink.plr.dir) {
-        case DOWN:
-            DrawTextureEx(enemyTextures->pinkDown, (Vector2) {emys->pink.plr.rec.x, emys->pink.plr.rec.y}, 0.0f, 0.125f, WHITE);
-            break;
-
-        case UP:
-            DrawTextureEx(enemyTextures->pinkUp, (Vector2){emys->pink.plr.rec.x, emys->pink.plr.rec.y}, 0.0f, 0.125f, WHITE);
-            break;
-
-        case LEFT:
-            DrawTextureEx(enemyTextures->pinkLeft, (Vector2){emys->pink.plr.rec.x, emys->pink.plr.rec.y}, 0.0f, 0.125f, WHITE);
-            break;
-
-        case RIGHT:
-            DrawTextureEx(enemyTextures->pinkRight, (Vector2){emys->pink.plr.rec.x, emys->pink.plr.rec.y}, 0.0f, 0.125f, WHITE);
-            break;
-
-        case NONE:
-            DrawTextureEx(enemyTextures->pinkUp, (Vector2){emys->pink.plr.rec.x, emys->pink.plr.rec.y}, 0.0f, 0.125f, WHITE);
-            break;
-    }
-
-    switch (emys->orange.plr.dir) {
-        case DOWN:
-            DrawTextureEx(enemyTextures->orangeDown, (Vector2) {emys->orange.plr.rec.x, emys->orange.plr.rec.y}, 0.0f, 0.125f, WHITE);
-            break;
-
-        case UP:
-            DrawTextureEx(enemyTextures->orangeUp, (Vector2){emys->orange.plr.rec.x, emys->orange.plr.rec.y}, 0.0f, 0.125f, WHITE);
-            break;
-
-        case LEFT:
-            DrawTextureEx(enemyTextures->orangeLeft, (Vector2){emys->orange.plr.rec.x, emys->orange.plr.rec.y}, 0.0f, 0.125f, WHITE);
-            break;
-
-        case RIGHT:
-            DrawTextureEx(enemyTextures->orangeRight, (Vector2){emys->orange.plr.rec.x, emys->orange.plr.rec.y}, 0.0f, 0.125f, WHITE);
-            break;
-
-        case NONE:
-            DrawTextureEx(enemyTextures->orangeUp, (Vector2){emys->orange.plr.rec.x, emys->orange.plr.rec.y}, 0.0f, 0.125f, WHITE);
-            break;
-    }
+void drawEnemies(Enemies* emys, Texture2D textureArr[4][5]) {
+    DrawTextureEx(textureArr[0][emys->red.plr.dir], (Vector2){emys->red.plr.rec.x, emys->red.plr.rec.y}, 0.0f, 0.125f, WHITE);
+    DrawTextureEx(textureArr[1][emys->blue.plr.dir], (Vector2){emys->blue.plr.rec.x, emys->blue.plr.rec.y}, 0.0f, 0.125f, WHITE);
+    DrawTextureEx(textureArr[2][emys->pink.plr.dir], (Vector2){emys->pink.plr.rec.x, emys->pink.plr.rec.y}, 0.0f, 0.125f, WHITE);
+    DrawTextureEx(textureArr[3][emys->orange.plr.dir], (Vector2){emys->orange.plr.rec.x, emys->orange.plr.rec.y}, 0.0f, 0.125f, WHITE);
 }
