@@ -1,7 +1,7 @@
 #ifndef MAIN_H
 #define MAIN_H
 
-//Jatekallapot kezelo
+//Game state enum
 enum GameState
 {
     MENU,
@@ -9,7 +9,7 @@ enum GameState
     SCOREBOARD
 };
 
-//Menuallapot kezelo
+//Menu state enum
 enum MenuState
 {
     IDLE,
@@ -25,13 +25,13 @@ enum GameEnd {
     LOSE
 };
 
-//Jovobeni megeheto pontok strukturaja
-typedef struct Pont {
+//Data structure for edible points
+typedef struct Point {
     Rectangle rect;
-    bool van;
-} Pont;
+    bool has;
+} Point;
 
-//Iranyok strukturaja
+//Enum for directions
 typedef enum 
 {
     UP,
@@ -41,7 +41,7 @@ typedef enum
     NONE
 } Dir;
 
-//Jatekos, valamint szellemek strukturaja
+//Data structure for player
 typedef struct Player {
     Rectangle rec;
     Dir dir;
@@ -49,10 +49,10 @@ typedef struct Player {
     Dir lastDir;
 } Player;
 
-//Scoreboard eredmenyeinek tarolasahoz
-typedef struct Eredmeny {
-    char* nev;
-    int pont;
-} Eredmeny;
+//Data structure for storing scoreboard data
+typedef struct Result {
+    char* name;
+    int score;
+} Result;
 
 #endif

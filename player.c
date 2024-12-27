@@ -1,12 +1,10 @@
 #include "raylib.h"
 #include "main.h"
-#include "pont.h"
+#include "point.h"
 #include "render.h"
 #include <stdlib.h>
 
-#include "debugmalloc.h"
-
-//Bemenet kezelese
+//Handle input
 void checkInput(Player* plr, Color* img) {
     if (IsKeyDown(KEY_LEFT)) {
         plr->nextDir = LEFT;
@@ -22,32 +20,32 @@ void checkInput(Player* plr, Color* img) {
     }
 }
 
-//Jatekos iranyanak frissitese
+//Update player direction
 void updateDir(Player* plr, Color* img) {
     switch (plr->nextDir) {
         case DOWN:
-            if (checkPont(plr->rec.x, plr->rec.y+20, img) && checkPont(plr->rec.x+19, plr->rec.y+20, img)) {
+            if (checkPoint(plr->rec.x, plr->rec.y+20, img) && checkPoint(plr->rec.x+19, plr->rec.y+20, img)) {
                 plr->dir = DOWN;
                 plr->nextDir = NONE;
             }
             break;
 
         case UP:
-            if (checkPont(plr->rec.x, plr->rec.y-1, img) && checkPont(plr->rec.x+19, plr->rec.y-1, img)) {
+            if (checkPoint(plr->rec.x, plr->rec.y-1, img) && checkPoint(plr->rec.x+19, plr->rec.y-1, img)) {
                 plr->dir = UP;
                 plr->nextDir = NONE;
             }
             break;
 
         case LEFT:
-            if (checkPont(plr->rec.x-1, plr->rec.y, img) && checkPont(plr->rec.x-1, plr->rec.y+19, img)) {
+            if (checkPoint(plr->rec.x-1, plr->rec.y, img) && checkPoint(plr->rec.x-1, plr->rec.y+19, img)) {
                 plr->dir = LEFT;
                 plr->nextDir = NONE;
             }
             break;
 
         case RIGHT:
-            if (checkPont(plr->rec.x+20, plr->rec.y, img) && checkPont(plr->rec.x+20, plr->rec.y+19, img)) {
+            if (checkPoint(plr->rec.x+20, plr->rec.y, img) && checkPoint(plr->rec.x+20, plr->rec.y+19, img)) {
                 plr->dir = RIGHT;
                 plr->nextDir = NONE;
             }
@@ -58,7 +56,7 @@ void updateDir(Player* plr, Color* img) {
     }
 }
 
-//Jatekos mozgasanak kezelese
+//Handle player movement
 void checkMove(Player* plr, Color* img) {
     if (plr->rec.x < 5) {
         plr->rec.x = 595;
@@ -70,28 +68,28 @@ void checkMove(Player* plr, Color* img) {
 
     switch (plr->dir) {
         case UP:
-            if (!checkPont(plr->rec.x, plr->rec.y-1, img)) {
+            if (!checkPoint(plr->rec.x, plr->rec.y-1, img)) {
                 plr->dir = NONE;
                 plr->lastDir = UP;
             }
             break;
 
         case DOWN:
-            if (!checkPont(plr->rec.x, plr->rec.y+20, img)) {
+            if (!checkPoint(plr->rec.x, plr->rec.y+20, img)) {
                 plr->dir = NONE;
                 plr->lastDir = DOWN;
             }
             break;
 
         case RIGHT:
-            if (!checkPont(plr->rec.x+20, plr->rec.y, img)) {
+            if (!checkPoint(plr->rec.x+20, plr->rec.y, img)) {
                 plr->dir = NONE;
                 plr->lastDir = RIGHT;
             }
             break;
 
         case LEFT:
-            if (!checkPont(plr->rec.x-1, plr->rec.y, img)) {
+            if (!checkPoint(plr->rec.x-1, plr->rec.y, img)) {
                 plr->dir = NONE;
                 plr->lastDir = LEFT;
             }
@@ -102,7 +100,7 @@ void checkMove(Player* plr, Color* img) {
     }
 }
 
-//Jatekos mozgatasa
+//Move player
 void move(Player* plr) {
     switch (plr->dir) {
         case UP:
@@ -126,7 +124,6 @@ void move(Player* plr) {
     }
 }
 
-//Pac-man figura forgatasa - meg nem mukodik
 float getRotation(Player* plr) {
     switch (plr->dir) {
         case DOWN:
@@ -173,7 +170,6 @@ float getRotation(Player* plr) {
     }
 }
 
-//Jatekos kezelese
 void handlePlayer(Player* plr, Color* img, Texture2D* pacman) {
     checkInput(plr, img);
     updateDir(plr, img);

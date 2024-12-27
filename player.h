@@ -2,7 +2,11 @@
 
 #ifndef PLAYER_H
 #define PLAYER_H
-void handlePlayer(Player *plr, Color* img, Texture2D* pacman);
+
+//Handle rotation of pac-man
 float getRotation(Player *plr);
-void move(Player *plr);
+
+//Handle player behavior
+void handlePlayer(Player *plr, Color* img, Texture2D* pacman);
+
 #endif

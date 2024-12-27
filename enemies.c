@@ -2,38 +2,36 @@
 #include "main.h"
 #include "player.h"
 #include "enemies.h"
-#include "pont.h"
+#include "point.h"
 #include <math.h>
 #include <stdio.h>
 
-#include "debugmalloc.h"
-
-//Szellemek lehetseges iranyainak megadasa
-void getPossibleDir(Enemy* emy, Color* img) {
-    if (checkPont(emy->plr.rec.x, emy->plr.rec.y + 20, img) && checkPont(emy->plr.rec.x + 19, emy->plr.rec.y + 20, img)) {
+//Set possible directions for enemies
+void setPossibleDir(Enemy* emy, Color* img) {
+    if (checkPoint(emy->plr.rec.x, emy->plr.rec.y + 20, img) && checkPoint(emy->plr.rec.x + 19, emy->plr.rec.y + 20, img)) {
         emy->pDir.d = true;
     } else emy->pDir.d = false;
 
-    if (checkPont(emy->plr.rec.x, emy->plr.rec.y - 1, img) && checkPont(emy->plr.rec.x + 19, emy->plr.rec.y - 1, img)) {
+    if (checkPoint(emy->plr.rec.x, emy->plr.rec.y - 1, img) && checkPoint(emy->plr.rec.x + 19, emy->plr.rec.y - 1, img)) {
         emy->pDir.u = true;
     } else emy->pDir.u = false;
 
-    if (checkPont(emy->plr.rec.x - 1, emy->plr.rec.y, img) && checkPont(emy->plr.rec.x - 1, emy->plr.rec.y + 19, img)) {
+    if (checkPoint(emy->plr.rec.x - 1, emy->plr.rec.y, img) && checkPoint(emy->plr.rec.x - 1, emy->plr.rec.y + 19, img)) {
         emy->pDir.l = true;;
     } else emy->pDir.l = false;
 
-    if (checkPont(emy->plr.rec.x + 20, emy->plr.rec.y, img) && checkPont(emy->plr.rec.x + 20, emy->plr.rec.y + 19, img)) {
+    if (checkPoint(emy->plr.rec.x + 20, emy->plr.rec.y, img) && checkPoint(emy->plr.rec.x + 20, emy->plr.rec.y + 19, img)) {
         emy->pDir.r = true;
     } else emy->pDir.r = false;
 }
 
-//Ket pont kozotti tavolsag kiszamitasa
-int tavSzamit(int kezdetX, int kezdetY, int celX, int celY) {
+//Calculate distance between two points
+int distance(int kezdetX, int kezdetY, int celX, int celY) {
     return (int) sqrt(pow(celX - kezdetX, 2) + pow(celY - kezdetY, 2));
 }
 
-//Legrovidebb uthoz valo irany kivalasztasa
-Dir tavMin(PossibleDir pDir, Tavolsag tav) {
+//Get the direction for the shortest possible path
+Dir minDir(PossibleDir pDir, EnemyPlayerDistance tav) {
     int min = 99999;
     Dir minDir = NONE;
 
@@ -57,19 +55,23 @@ Dir tavMin(PossibleDir pDir, Tavolsag tav) {
     return minDir;
 }
 
-void utvalaszt(Enemy* emy, int celX, int celY, Color* img) {
-    getPossibleDir(emy, img);
-    Tavolsag tav = {-1, -1, -1, -1};
+EnemyPlayerDistance getEnemyPlayerDistance(Enemy* emy, int celX, int celY) {
+    EnemyPlayerDistance tav = {-1, -1, -1, -1};
     
-    tav.down = tavSzamit(emy->plr.rec.x, emy->plr.rec.y + 20, celX, celY);
-    
-    tav.up = tavSzamit(emy->plr.rec.x, emy->plr.rec.y - 20, celX, celY);
-    
-    tav.left = tavSzamit(emy->plr.rec.x - 20, emy->plr.rec.y, celX, celY);
-    
-    tav.right = tavSzamit(emy->plr.rec.x + 20, emy->plr.rec.y, celX, celY);
+    tav.down = distance(emy->plr.rec.x, emy->plr.rec.y + 20, celX, celY);
+    tav.up = distance(emy->plr.rec.x, emy->plr.rec.y - 20, celX, celY);
+    tav.left = distance(emy->plr.rec.x - 20, emy->plr.rec.y, celX, celY);
+    tav.right = distance(emy->plr.rec.x + 20, emy->plr.rec.y, celX, celY);
 
-    Dir min = tavMin(emy->pDir, tav);
+    return tav;
+}
+
+//Pathfinding for enemies
+void pathfind(Enemy* emy, int celX, int celY, Color* img) {
+    setPossibleDir(emy, img);
+
+    EnemyPlayerDistance dist = getEnemyPlayerDistance(emy, celX, celY);
+    Dir min = minDir(emy->pDir, dist);
     
     if (min != NONE && emy->plr.lastDir != min) {
         emy->plr.lastDir = emy->plr.dir;
@@ -77,9 +79,9 @@ void utvalaszt(Enemy* emy, int celX, int celY, Color* img) {
     }
 }
 
-//Szellemek mozgasanak ellenorzese
+//Check movement for enemies
 void checkEnemyMove(Enemy* emy, Color* img) {
-    //Bal es jobb oldalt valo valtas
+    //Switching between left and right sides
     if (emy->plr.rec.x < 5) {
         emy->plr.rec.x = 595;
     }
@@ -90,28 +92,28 @@ void checkEnemyMove(Enemy* emy, Color* img) {
 
     switch (emy->plr.dir) {
         case UP:
-            if (!checkPont(emy->plr.rec.x, emy->plr.rec.y-1, img)) {
+            if (!checkPoint(emy->plr.rec.x, emy->plr.rec.y-1, img)) {
                 emy->plr.dir = NONE;
                 emy->plr.lastDir = UP;
             }
             break;
 
         case DOWN:
-            if (!checkPont(emy->plr.rec.x, emy->plr.rec.y+20, img)) {
+            if (!checkPoint(emy->plr.rec.x, emy->plr.rec.y+20, img)) {
                 emy->plr.dir = NONE;
                 emy->plr.lastDir = DOWN;
             }
             break;
 
         case RIGHT:
-            if (!checkPont(emy->plr.rec.x+20, emy->plr.rec.y, img)) {
+            if (!checkPoint(emy->plr.rec.x+20, emy->plr.rec.y, img)) {
                 emy->plr.dir = NONE;
                 emy->plr.lastDir = RIGHT;
             }
             break;
 
         case LEFT:
-            if (!checkPont(emy->plr.rec.x-1, emy->plr.rec.y, img)) {
+            if (!checkPoint(emy->plr.rec.x-1, emy->plr.rec.y, img)) {
                 emy->plr.dir = NONE;
                 emy->plr.lastDir = LEFT;
             }
@@ -122,7 +124,7 @@ void checkEnemyMove(Enemy* emy, Color* img) {
     }
 }
 
-//Szellemek mozgatasa
+//Movement for enemies
 void moveEnemy(Enemy* emy) {
     switch (emy->plr.dir) {
         case UP:
@@ -146,14 +148,12 @@ void moveEnemy(Enemy* emy) {
     }
 }
 
-//Egyszeruen a jatekos fele probal haladni
 void handleRed(Enemy* emy, Player* plr, Color* img, bool* init) {
-    utvalaszt(emy, plr->rec.x, plr->rec.y, img);
+    pathfind(emy, plr->rec.x, plr->rec.y, img);
     checkEnemyMove(emy, img);
     moveEnemy(emy);
 }
 
-//ELoszor kijut a szellemdobozbol, majd a jatekos ele probal haladni
 void handlePink(Enemy* emy, Player* plr, Color* img, bool* init) {
     if (*init &&
         emy->plr.rec.y >= 220 &&
@@ -161,7 +161,7 @@ void handlePink(Enemy* emy, Player* plr, Color* img, bool* init) {
         {
         if (emy->plr.rec.y == 220) {
             *init = false;
-            utvalaszt(emy, plr->rec.x, plr->rec.y, img);
+            pathfind(emy, plr->rec.x, plr->rec.y, img);
         }
         else {
             emy->plr.rec.y--;
@@ -170,25 +170,25 @@ void handlePink(Enemy* emy, Player* plr, Color* img, bool* init) {
     else {
         switch (plr->dir) {
             case UP:
-                utvalaszt(emy, plr->rec.x, plr->rec.y - 20, img);
+                pathfind(emy, plr->rec.x, plr->rec.y - 20, img);
                 checkEnemyMove(emy, img);
                 moveEnemy(emy);
                 break;
 
             case DOWN:
-                utvalaszt(emy, plr->rec.x, plr->rec.y + 20, img);
+                pathfind(emy, plr->rec.x, plr->rec.y + 20, img);
                 checkEnemyMove(emy, img);
                 moveEnemy(emy);
                 break;
 
             case LEFT:
-                utvalaszt(emy, plr->rec.x + 20, plr->rec.y, img);
+                pathfind(emy, plr->rec.x + 20, plr->rec.y, img);
                 checkEnemyMove(emy, img);
                 moveEnemy(emy);
                 break;
 
             case RIGHT:
-                utvalaszt(emy, plr->rec.x - 20, plr->rec.y, img);
+                pathfind(emy, plr->rec.x - 20, plr->rec.y, img);
                 checkEnemyMove(emy, img);
                 moveEnemy(emy);
                 break;
@@ -199,15 +199,12 @@ void handlePink(Enemy* emy, Player* plr, Color* img, bool* init) {
     }
 }
 
-//ELoszor kijut a szellemdobozbol, majd huz egy egyenest a piros szellem poziciojatol
-//a jatekos ele, azt megkettozi, es oda tart
-//Ezaltal ahogy a piros kozelebb jut a jatekoshoz, a kek is egyre kozelebb lesz hozza
 void handleBlue(Enemy* emy, Enemy* red, Player* plr, Color* img, bool* init) {
     if (*init) {
         if (emy->plr.rec.x == 290) {
             if (emy->plr.rec.y == 220) {
                 *init = false;
-                utvalaszt(emy, plr->rec.x, plr->rec.y, img);
+                pathfind(emy, plr->rec.x, plr->rec.y, img);
             } else emy->plr.rec.y--;
         } else emy->plr.rec.x++;
     }
@@ -248,39 +245,35 @@ void handleBlue(Enemy* emy, Enemy* red, Player* plr, Color* img, bool* init) {
                 break;
         }
 
-        utvalaszt(emy, celX, celY, img);
+        pathfind(emy, celX, celY, img);
         checkEnemyMove(emy, img);
         moveEnemy(emy);
     }
 }
 
-//Eloszor kijut a szellemdobozbol, majd attol fuggoen, hogy kozel vagy messze van a jatekostol:
-// - ha kozel van: menekul vissza a palya kozepere
-// - ha messze van: a jatekos fele tart
 void handleOrange(Enemy* emy, Player* plr, Color* img, bool* init) {
     if (*init) {
         if (emy->plr.rec.x == 290) {
             if (emy->plr.rec.y == 220) {
                 *init = false;
-                utvalaszt(emy, plr->rec.x, plr->rec.y, img);
+                pathfind(emy, plr->rec.x, plr->rec.y, img);
             } else emy->plr.rec.y--;
         } else emy->plr.rec.x--;
     }
     else {
-        if (tavSzamit(emy->plr.rec.x, emy->plr.rec.y, plr->rec.x, plr->rec.y) > 80) {
-            utvalaszt(emy, plr->rec.x, plr->rec.y, img);
+        if (distance(emy->plr.rec.x, emy->plr.rec.y, plr->rec.x, plr->rec.y) > 80) {
+            pathfind(emy, plr->rec.x, plr->rec.y, img);
             checkEnemyMove(emy, img);
             moveEnemy(emy);
         }
         else {
-            utvalaszt(emy, 290, 220, img);
+            pathfind(emy, 290, 220, img);
             checkEnemyMove(emy, img);
             moveEnemy(emy);
         }
     }
 }
 
-//Halal ellenorzese
 bool checkDeath(Enemies* emys, Player* plr) {
     if        (CheckCollisionRecs(emys->blue.plr.rec, plr->rec)) {
         return true;

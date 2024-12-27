@@ -1,13 +1,11 @@
 #include "raylib.h"
 #include "main.h"
 #include "player.h"
-#include "pont.h"
+#include "point.h"
 #include "enemies.h"
 
-#include "debugmalloc.h"
-
-static const int screenWidth = 600;
-static const int screenHeight = 581;
+extern int screenWidth;
+extern int screenHeight;
 
 void renderBackground(int gamestate, Texture2D* bg) {
     DrawTexture(*bg, 0, 0, WHITE);
@@ -28,11 +26,11 @@ void drawMenu(int menustate, bool debug) {
     DrawText("Debug", 40, 10, 22, WHITE);
 }
 
-void drawPont(Pont** pontok) {
+void drawPont(Point** points) {
     for (int i = 0; i < screenWidth/20; i++) {
         for (int j = 0; j < screenHeight/20; j++) {
-            if (pontok[j][i].van) {
-                DrawRectangleRec(pontok[j][i].rect, (Color) {240, 240, 214, 200});
+            if (points[j][i].has) {
+                DrawRectangleRec(points[j][i].rect, (Color) {240, 240, 214, 200});
             }
         }
     }
